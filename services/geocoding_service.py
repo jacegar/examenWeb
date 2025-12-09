@@ -79,30 +79,3 @@ def reverse_geocode(latitud: float, longitud: float) -> Optional[str]:
     except Exception as e:
         print(f"Error en reverse geocoding: {e}")
         return None
-
-def get_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-    """
-    Calcular distancia entre dos puntos GPS (en kilómetros)
-    Fórmula de Haversine
-    
-    Args:
-        lat1, lon1: Coordenadas del primer punto
-        lat2, lon2: Coordenadas del segundo punto
-        
-    Returns:
-        float: Distancia en kilómetros
-    """
-    from math import radians, sin, cos, sqrt, atan2
-    
-    R = 6371  # Radio de la Tierra en km
-    
-    lat1_rad = radians(lat1)
-    lat2_rad = radians(lat2)
-    delta_lat = radians(lat2 - lat1)
-    delta_lon = radians(lon2 - lon1)
-    
-    a = sin(delta_lat/2)**2 + cos(lat1_rad) * cos(lat2_rad) * sin(delta_lon/2)**2
-    c = 2 * atan2(sqrt(a), sqrt(1-a))
-    
-    distance = R * c
-    return distance

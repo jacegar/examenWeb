@@ -24,14 +24,10 @@ def serve_static(path):
 # Importar y registrar blueprints
 from routes.auth import auth_bp
 from routes.peliculas import peliculas_bp
-from routes.salas import salas_bp
-from routes.proyecciones import proyecciones_bp
 from routes.upload import upload_bp
 
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(peliculas_bp, url_prefix='/api/peliculas')
-app.register_blueprint(salas_bp, url_prefix='/api/salas')
-app.register_blueprint(proyecciones_bp, url_prefix='/api/proyecciones')
 app.register_blueprint(upload_bp, url_prefix='/api/upload')
 
 if __name__ == '__main__':
