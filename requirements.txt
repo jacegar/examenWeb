@@ -1,0 +1,7 @@
+flask
+pymongo
+python-dotenv
+pyjwt
+google-auth
+requests
+cloudinary
