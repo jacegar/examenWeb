@@ -9,7 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Verificar si hay token guardado
     token = localStorage.getItem('token');
     if (token) {
+        // Ocultar pantalla de login inmediatamente
         document.getElementById('loginScreen').style.display = 'none';
+        
+        // Cancelar el prompt de One Tap de Google si se está mostrando
+        if (window.google && google.accounts && google.accounts.id) {
+            google.accounts.id.cancel();
+        }
+        
         verifyToken();
     }
 });
