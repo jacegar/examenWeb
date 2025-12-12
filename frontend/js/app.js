@@ -3,6 +3,7 @@ let token = null;
 let map = null;
 let markers = [];
 let reviews = [];
+let uploadedImages = []; // Array para guardar las URLs de imágenes subidas
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', () => {
@@ -91,6 +92,7 @@ function showApp(user) {
     document.getElementById('logoutBtn').addEventListener('click', logout);
     document.getElementById('showFormBtn').addEventListener('click', showForm);
     document.getElementById('createReviewForm').addEventListener('submit', createReview);
+    document.getElementById('imagenes').addEventListener('change', handleImageUpload);
 }
 
 // Cerrar sesión
@@ -225,6 +227,104 @@ function hideForm() {
     document.getElementById('reviewsList').style.display = 'block';
     document.getElementById('showFormBtn').style.display = 'block';
     document.getElementById('createReviewForm').reset();
+    
+    // Limpiar imágenes subidas
+    uploadedImages = [];
+    document.getElementById('imagePreviewContainer').innerHTML = '';
+}
+
+// Manejar subida de imagen individual
+async function handleImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // Validar tipo de archivo
+    const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        alert('Tipo de archivo no permitido. Usa: PNG, JPG, JPEG, GIF o WEBP');
+        e.target.value = '';
+        return;
+    }
+    
+    // Crear preview temporal
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const previewId = 'preview_' + Date.now();
+    const previewDiv = document.createElement('div');
+    previewDiv.className = 'image-preview-item';
+    previewDiv.id = previewId;
+    
+    // Crear preview de la imagen
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    previewDiv.appendChild(img);
+    
+    // Mostrar indicador de carga
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'image-loading';
+    loadingDiv.textContent = 'Subiendo...';
+    previewDiv.appendChild(loadingDiv);
+    
+    previewContainer.appendChild(previewDiv);
+    
+    // Subir imagen a Cloudinary
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    try {
+        const response = await fetch('/api/upload/image?folder=reviews', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.url) {
+            // Guardar URL de la imagen subida
+            uploadedImages.push({
+                url: data.url,
+                public_id: data.public_id,
+                previewId: previewId
+            });
+            
+            // Remover indicador de carga
+            loadingDiv.remove();
+            
+            // Agregar botón de eliminar
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-image';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = () => removeUploadedImage(previewId);
+            previewDiv.appendChild(removeBtn);
+            
+        } else {
+            throw new Error(data.error || 'Error al subir imagen');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al subir la imagen: ' + error.message);
+        previewDiv.remove();
+    }
+    
+    // Limpiar input para permitir seleccionar otra imagen
+    e.target.value = '';
+}
+
+// Eliminar imagen subida
+function removeUploadedImage(previewId) {
+    // Remover del array
+    const index = uploadedImages.findIndex(img => img.previewId === previewId);
+    if (index > -1) {
+        uploadedImages.splice(index, 1);
+    }
+    
+    // Remover del DOM
+    const previewElement = document.getElementById(previewId);
+    if (previewElement) {
+        previewElement.remove();
+    }
 }
 
 // Crear nueva reseña
@@ -236,11 +336,10 @@ function createReview(e) {
     formData.append('direccion', document.getElementById('direccion').value);
     formData.append('valoracion', document.getElementById('valoracion').value);
     
-    // Añadir imágenes
-    const imageFiles = document.getElementById('imagenes').files;
-    for (let i = 0; i < imageFiles.length; i++) {
-        formData.append('imagenes', imageFiles[i]);
-    }
+    // Agregar URLs de imágenes ya subidas
+    uploadedImages.forEach(img => {
+        formData.append('imagenes_urls[]', img.url);
+    });
     
     // Mostrar indicador de carga
     const submitBtn = e.target.querySelector('button[type="submit"]');

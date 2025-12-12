@@ -68,8 +68,10 @@ def create_resena(user_data):
         if not coords:
             return jsonify({'error': 'No se pudo geocodificar la dirección proporcionada'}), 400
         
-        # Procesar imágenes si existen
-        imagenes_uri = []
+        # Obtener URLs de imágenes ya subidas (si las hay)
+        imagenes_uri = request.form.getlist('imagenes_urls[]')
+        
+        # Procesar imágenes nuevas si existen (backward compatibility)
         if 'imagenes' in request.files:
             files = request.files.getlist('imagenes')
             for file in files:
