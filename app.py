@@ -21,13 +21,20 @@ def index():
 def serve_static(path):
     return send_from_directory('frontend', path)
 
+# Endpoint para configuración pública
+@app.route('/api/config')
+def get_config():
+    return jsonify({
+        'googleClientId': os.getenv('GOOGLE_CLIENT_ID')
+    })
+
 # Importar y registrar blueprints
 from routes.auth import auth_bp
-from routes.peliculas import peliculas_bp
+from routes.resenas import resenas_bp
 from routes.upload import upload_bp
 
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
-app.register_blueprint(peliculas_bp, url_prefix='/api/peliculas')
+app.register_blueprint(resenas_bp, url_prefix='/api/resenas')
 app.register_blueprint(upload_bp, url_prefix='/api/upload')
 
 if __name__ == '__main__':

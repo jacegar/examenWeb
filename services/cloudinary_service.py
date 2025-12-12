@@ -10,7 +10,7 @@ cloudinary.config(
     cloudinary_url=os.getenv('CLOUDINARY_URL')
 )
 
-def upload_image(file, folder="cineweb"):
+def upload_image(file, folder="reviews"):
     """
     Subir una imagen a Cloudinary
     
@@ -28,7 +28,7 @@ def upload_image(file, folder="cineweb"):
             folder=folder,
             resource_type="image",
             transformation=[
-                {'width': 500, 'height': 750, 'crop': 'limit'},  # Limitar tamaño máximo
+                {'width': 800, 'height': 600, 'crop': 'limit'},  # Limitar tamaño máximo
                 {'quality': 'auto'}  # Optimización automática
             ]
         )

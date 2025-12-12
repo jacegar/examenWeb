@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Titulo</title>
+    <title>ReViews - Reseñas de Establecimientos</title>
     <link rel="stylesheet" href="/css/styles.css">
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -13,6 +13,119 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
-a
+    <!-- Pantalla de Login -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <h1>ReViews</h1>
+            <p>Comparte tus experiencias en restaurantes, hoteles y más</p>
+            <div id="g_id_onload"
+                 data-client_id=""
+                 data-callback="handleCredentialResponse">
+            </div>
+            <div class="g_id_signin" 
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="outline"
+                 data-text="sign_in_with"
+                 data-shape="rectangular"
+                 data-logo_alignment="left">
+            </div>
+        </div>
+    </div>
+
+    <!-- Aplicación Principal -->
+    <div id="mainApp" class="main-app" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <h1>ReViews</h1>
+            <div class="user-info">
+                <img id="userAvatar" src="" alt="Avatar" class="user-avatar">
+                <span id="userName"></span>
+                <button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
+            </div>
+        </header>
+
+        <!-- Contenedor Principal -->
+        <div class="container">
+            <!-- Columna Izquierda: Mapa y Búsqueda -->
+            <div class="left-column">
+                <div class="map-container">
+                    <h2>Mapa de Establecimientos</h2>
+                    
+                    <!-- Formulario de búsqueda de dirección -->
+                    <div class="search-form">
+                        <input type="text" id="searchAddress" placeholder="Buscar dirección...">
+                        <button onclick="searchAddress()" class="btn-primary">Buscar</button>
+                    </div>
+                    
+                    <!-- Mapa -->
+                    <div id="map"></div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Lista de Reseñas y Formulario -->
+            <div class="right-column">
+                <!-- Botón para mostrar formulario -->
+                <button id="showFormBtn" class="btn-primary btn-large">
+                    Nueva Reseña
+                </button>
+
+                <!-- Formulario de Nueva Reseña -->
+                <div id="reviewForm" class="review-form" style="display: none;">
+                    <h2>Nueva Reseña</h2>
+                    <form id="createReviewForm">
+                        <div class="form-group">
+                            <label for="nombreEstablecimiento">Nombre del Establecimiento *</label>
+                            <input type="text" id="nombreEstablecimiento" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="direccion">Dirección Postal *</label>
+                            <input type="text" id="direccion" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="valoracion">Valoración *</label>
+                            <select id="valoracion" required>
+                                <option value="">Selecciona...</option>
+                                <option value="1">Muy malo</option>
+                                <option value="2">Malo</option>
+                                <option value="3">Regular</option>
+                                <option value="4">Bueno</option>
+                                <option value="5">Muy bueno</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="imagenes">Imágenes (opcional)</label>
+                            <input type="file" id="imagenes" multiple accept="image/*">
+                            <small>Puedes seleccionar varias imágenes</small>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Crear Reseña</button>
+                            <button type="button" onclick="hideForm()" class="btn-secondary">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Lista de Reseñas -->
+                <div id="reviewsList" class="reviews-list">
+                    <h2>Reseñas</h2>
+                    <div id="reviewsContainer"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Detalle de Reseña -->
+        <div id="reviewModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <div id="modalBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
 </body>
 </html>

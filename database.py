@@ -16,7 +16,7 @@ class Database:
             mongodb_uri = os.getenv('MONGODB_URI')
             self.client = MongoClient(mongodb_uri)
             # Obtener el nombre de la base de datos de la URI o usar uno por defecto
-            self.db = self.client['cineweb']
+            self.db = self.client['reviews']
             print("Conectado a MongoDB Atlas")
         return self.db
     
