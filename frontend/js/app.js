@@ -3,36 +3,15 @@ let token = null;
 let map = null;
 let markers = [];
 let reviews = [];
-let GOOGLE_CLIENT_ID = null;
 
 // Inicialización
-document.addEventListener('DOMContentLoaded', async () => {
-    // Cargar configuración desde el backend
-    await loadConfig();
-    
+document.addEventListener('DOMContentLoaded', () => {
     // Verificar si hay token guardado
     token = localStorage.getItem('token');
     if (token) {
         verifyToken();
     }
 });
-
-// Cargar configuración pública desde el backend
-async function loadConfig() {
-    try {
-        const response = await fetch('/api/config');
-        const config = await response.json();
-        GOOGLE_CLIENT_ID = config.googleClientId;
-        
-        // Actualizar el botón de Google Sign-In con el Client ID correcto
-        const gidOnload = document.getElementById('g_id_onload');
-        if (gidOnload) {
-            gidOnload.setAttribute('data-client_id', GOOGLE_CLIENT_ID);
-        }
-    } catch (error) {
-        console.error('Error cargando configuración:', error);
-    }
-}
 
 // Callback de Google Sign-In
 function handleCredentialResponse(response) {
