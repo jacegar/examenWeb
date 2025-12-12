@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Verificar si hay token guardado
     token = localStorage.getItem('token');
     if (token) {
+        document.getElementById('loginScreen').style.display = 'none';
         verifyToken();
     }
 });
